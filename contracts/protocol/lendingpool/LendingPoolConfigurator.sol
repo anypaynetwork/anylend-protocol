@@ -67,13 +67,13 @@ contract LendingPoolConfigurator is VersionedInitializable, ILendingPoolConfigur
     }
   }
 
-  function _initReserve(ILendingPool pool, InitReserveInput calldata input) internal {
+  function _initReserve(ILendingPool _pool, InitReserveInput calldata input) internal {
     address aTokenProxyAddress =
       _initTokenWithProxy(
         input.aTokenImpl,
         abi.encodeWithSelector(
           IInitializableAToken.initialize.selector,
-          pool,
+          _pool,
           input.treasury,
           input.underlyingAsset,
           IAaveIncentivesController(input.incentivesController),
@@ -89,7 +89,7 @@ contract LendingPoolConfigurator is VersionedInitializable, ILendingPoolConfigur
         input.stableDebtTokenImpl,
         abi.encodeWithSelector(
           IInitializableDebtToken.initialize.selector,
-          pool,
+          _pool,
           input.underlyingAsset,
           IAaveIncentivesController(input.incentivesController),
           input.underlyingAssetDecimals,
@@ -104,7 +104,7 @@ contract LendingPoolConfigurator is VersionedInitializable, ILendingPoolConfigur
         input.variableDebtTokenImpl,
         abi.encodeWithSelector(
           IInitializableDebtToken.initialize.selector,
-          pool,
+          _pool,
           input.underlyingAsset,
           IAaveIncentivesController(input.incentivesController),
           input.underlyingAssetDecimals,
@@ -114,7 +114,7 @@ contract LendingPoolConfigurator is VersionedInitializable, ILendingPoolConfigur
         )
       );
 
-    pool.initReserve(
+    _pool.initReserve(
       input.underlyingAsset,
       aTokenProxyAddress,
       stableDebtTokenProxyAddress,
@@ -123,14 +123,14 @@ contract LendingPoolConfigurator is VersionedInitializable, ILendingPoolConfigur
     );
 
     DataTypes.ReserveConfigurationMap memory currentConfig =
-      pool.getConfiguration(input.underlyingAsset);
+      _pool.getConfiguration(input.underlyingAsset);
 
     currentConfig.setDecimals(input.underlyingAssetDecimals);
 
     currentConfig.setActive(true);
     currentConfig.setFrozen(false);
 
-    pool.setConfiguration(input.underlyingAsset, currentConfig.data);
+    _pool.setConfiguration(input.underlyingAsset, currentConfig.data);
 
     emit ReserveInitialized(
       input.underlyingAsset,
@@ -151,7 +151,8 @@ contract LendingPoolConfigurator is VersionedInitializable, ILendingPoolConfigur
 
     (, , , uint256 decimals, ) = cachedPool.getConfiguration(input.asset).getParamsMemory();
 
-    bytes memory encodedCall = abi.encodeWithSelector(
+    bytes memory encodedCall =
+      abi.encodeWithSelector(
         IInitializableAToken.initialize.selector,
         cachedPool,
         input.treasury,
@@ -163,11 +164,7 @@ contract LendingPoolConfigurator is VersionedInitializable, ILendingPoolConfigur
         input.params
       );
 
-    _upgradeTokenImplementation(
-      reserveData.aTokenAddress,
-      input.implementation,
-      encodedCall
-    );
+    _upgradeTokenImplementation(reserveData.aTokenAddress, input.implementation, encodedCall);
 
     emit ATokenUpgraded(input.asset, reserveData.aTokenAddress, input.implementation);
   }
@@ -179,10 +176,11 @@ contract LendingPoolConfigurator is VersionedInitializable, ILendingPoolConfigur
     ILendingPool cachedPool = pool;
 
     DataTypes.ReserveData memory reserveData = cachedPool.getReserveData(input.asset);
-     
+
     (, , , uint256 decimals, ) = cachedPool.getConfiguration(input.asset).getParamsMemory();
 
-    bytes memory encodedCall = abi.encodeWithSelector(
+    bytes memory encodedCall =
+      abi.encodeWithSelector(
         IInitializableDebtToken.initialize.selector,
         cachedPool,
         input.asset,
@@ -209,17 +207,15 @@ contract LendingPoolConfigurator is VersionedInitializable, ILendingPoolConfigur
   /**
    * @dev Updates the variable debt token implementation for the asset
    **/
-  function updateVariableDebtToken(UpdateDebtTokenInput calldata input)
-    external
-    onlyPoolAdmin
-  {
+  function updateVariableDebtToken(UpdateDebtTokenInput calldata input) external onlyPoolAdmin {
     ILendingPool cachedPool = pool;
 
     DataTypes.ReserveData memory reserveData = cachedPool.getReserveData(input.asset);
 
     (, , , uint256 decimals, ) = cachedPool.getConfiguration(input.asset).getParamsMemory();
 
-    bytes memory encodedCall = abi.encodeWithSelector(
+    bytes memory encodedCall =
+      abi.encodeWithSelector(
         IInitializableDebtToken.initialize.selector,
         cachedPool,
         input.asset,
