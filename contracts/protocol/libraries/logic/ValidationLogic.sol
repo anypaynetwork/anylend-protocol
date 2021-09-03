@@ -143,7 +143,7 @@ library ValidationLogic {
 
     require(vars.borrowingEnabled, Errors.VL_BORROWING_NOT_ENABLED);
 
-    //validate interest rate mode
+    // validate interest rate mode
     require(
       uint256(DataTypes.InterestRateMode.VARIABLE) == interestRateMode ||
         uint256(DataTypes.InterestRateMode.STABLE) == interestRateMode,

@@ -61,9 +61,9 @@ library ReserveLogic {
   {
     uint40 timestamp = reserve.lastUpdateTimestamp;
 
-    //solium-disable-next-line
+    // solium-disable-next-line
     if (timestamp == uint40(block.timestamp)) {
-      //if the index was updated in the same block, no need to perform any calculation
+      // if the index was updated in the same block, no need to perform any calculation
       return reserve.liquidityIndex;
     }
 
