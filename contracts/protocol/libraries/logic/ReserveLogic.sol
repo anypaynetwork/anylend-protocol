@@ -89,9 +89,9 @@ library ReserveLogic {
   {
     uint40 timestamp = reserve.lastUpdateTimestamp;
 
-    //solium-disable-next-line
+    // solium-disable-next-line
     if (timestamp == uint40(block.timestamp)) {
-      //if the index was updated in the same block, no need to perform any calculation
+      // if the index was updated in the same block, no need to perform any calculation
       return reserve.variableBorrowIndex;
     }
 
@@ -209,9 +209,9 @@ library ReserveLogic {
     (vars.totalStableDebt, vars.avgStableRate) = IStableDebtToken(vars.stableDebtTokenAddress)
       .getTotalSupplyAndAvgRate();
 
-    //calculates the total variable debt locally using the scaled total supply instead
-    //of totalSupply(), as it's noticeably cheaper. Also, the index has been
-    //updated by the previous updateState() call
+    // calculates the total variable debt locally using the scaled total supply instead
+    // of totalSupply(), as it's noticeably cheaper. Also, the index has been
+    // updated by the previous updateState() call
     vars.totalVariableDebt = IVariableDebtToken(reserve.variableDebtTokenAddress)
       .scaledTotalSupply()
       .rayMul(reserve.variableBorrowIndex);
@@ -287,7 +287,7 @@ library ReserveLogic {
       return;
     }
 
-    //fetching the principal, total stable debt and the avg stable rate
+    // fetching the principal, total stable debt and the avg stable rate
     (
       vars.principalStableDebt,
       vars.currentStableDebt,
@@ -295,13 +295,13 @@ library ReserveLogic {
       vars.stableSupplyUpdatedTimestamp
     ) = IStableDebtToken(reserve.stableDebtTokenAddress).getSupplyData();
 
-    //calculate the last principal variable debt
+    // calculate the last principal variable debt
     vars.previousVariableDebt = scaledVariableDebt.rayMul(previousVariableBorrowIndex);
 
-    //calculate the new total supply after accumulation of the index
+    // calculate the new total supply after accumulation of the index
     vars.currentVariableDebt = scaledVariableDebt.rayMul(newVariableBorrowIndex);
 
-    //calculate the stable debt until the last timestamp update
+    // calculate the stable debt until the last timestamp update
     vars.cumulatedStableInterest = MathUtils.calculateCompoundedInterest(
       vars.avgStableRate,
       vars.stableSupplyUpdatedTimestamp,
@@ -310,7 +310,7 @@ library ReserveLogic {
 
     vars.previousStableDebt = vars.principalStableDebt.rayMul(vars.cumulatedStableInterest);
 
-    //debt accrued is the sum of the current debt minus the sum of the debt at the last update
+    // debt accrued is the sum of the current debt minus the sum of the debt at the last update
     vars.totalDebtAccrued = vars
       .currentVariableDebt
       .add(vars.currentStableDebt)
@@ -343,7 +343,7 @@ library ReserveLogic {
     uint256 newLiquidityIndex = liquidityIndex;
     uint256 newVariableBorrowIndex = variableBorrowIndex;
 
-    //only cumulating if there is any income being produced
+    // only cumulating if there is any income being produced
     if (currentLiquidityRate > 0) {
       uint256 cumulatedLiquidityInterest =
         MathUtils.calculateLinearInterest(currentLiquidityRate, timestamp);
@@ -352,8 +352,8 @@ library ReserveLogic {
 
       reserve.liquidityIndex = uint128(newLiquidityIndex);
 
-      //as the liquidity rate might come only from stable rate loans, we need to ensure
-      //that there is actual variable debt before accumulating
+      // as the liquidity rate might come only from stable rate loans, we need to ensure
+      // that there is actual variable debt before accumulating
       if (scaledVariableDebt != 0) {
         uint256 cumulatedVariableBorrowInterest =
           MathUtils.calculateCompoundedInterest(reserve.currentVariableBorrowRate, timestamp);
@@ -366,7 +366,7 @@ library ReserveLogic {
       }
     }
 
-    //solium-disable-next-line
+    // solium-disable-next-line
     reserve.lastUpdateTimestamp = uint40(block.timestamp);
     return (newLiquidityIndex, newVariableBorrowIndex);
   }
