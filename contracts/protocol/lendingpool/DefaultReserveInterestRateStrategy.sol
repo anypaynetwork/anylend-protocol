@@ -128,7 +128,7 @@ contract DefaultReserveInterestRateStrategy is IReserveInterestRateStrategy {
     )
   {
     uint256 availableLiquidity = IERC20(reserve).balanceOf(aToken);
-    //avoid stack too deep
+    // avoid stack too deep
     availableLiquidity = availableLiquidity.add(liquidityAdded).sub(liquidityTaken);
 
     return

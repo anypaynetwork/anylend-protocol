@@ -161,7 +161,7 @@ contract StableDebtToken is IStableDebtToken, DebtTokenBase {
     require(vars.newStableRate <= type(uint128).max, Errors.SDT_STABLE_DEBT_OVERFLOW);
     _usersStableRate[onBehalfOf] = vars.newStableRate;
 
-    //solium-disable-next-line
+    // solium-disable-next-line
     _totalSupplyTimestamp = _timestamps[onBehalfOf] = uint40(block.timestamp);
 
     // Calculates the updated average stable rate
