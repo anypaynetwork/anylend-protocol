@@ -287,7 +287,7 @@ library ReserveLogic {
       return;
     }
 
-    //fetching the principal, total stable debt and the avg stable rate
+    // fetching the principal, total stable debt and the avg stable rate
     (
       vars.principalStableDebt,
       vars.currentStableDebt,
@@ -295,13 +295,13 @@ library ReserveLogic {
       vars.stableSupplyUpdatedTimestamp
     ) = IStableDebtToken(reserve.stableDebtTokenAddress).getSupplyData();
 
-    //calculate the last principal variable debt
+    // calculate the last principal variable debt
     vars.previousVariableDebt = scaledVariableDebt.rayMul(previousVariableBorrowIndex);
 
-    //calculate the new total supply after accumulation of the index
+    // calculate the new total supply after accumulation of the index
     vars.currentVariableDebt = scaledVariableDebt.rayMul(newVariableBorrowIndex);
 
-    //calculate the stable debt until the last timestamp update
+    // calculate the stable debt until the last timestamp update
     vars.cumulatedStableInterest = MathUtils.calculateCompoundedInterest(
       vars.avgStableRate,
       vars.stableSupplyUpdatedTimestamp,
