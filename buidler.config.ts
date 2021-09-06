@@ -13,7 +13,8 @@ usePlugin('@nomiclabs/buidler-ethers');
 usePlugin('buidler-typechain');
 usePlugin('solidity-coverage');
 usePlugin('@nomiclabs/buidler-waffle');
-usePlugin('@nomiclabs/buidler-etherscan');
+// usePlugin('@nomiclabs/buidler-etherscan');
+usePlugin('@nomiclabs/hardhat-etherscan');
 
 const SKIP_LOAD = process.env.SKIP_LOAD === 'true';
 const DEFAULT_BLOCK_GAS_LIMIT = 12450000;
@@ -72,6 +73,10 @@ const buidlerConfig: any = {
     kovan: getCommonNetworkConfig(eEthereumNetwork.kovan, 42),
     ropsten: getCommonNetworkConfig(eEthereumNetwork.ropsten, 3),
     main: getCommonNetworkConfig(eEthereumNetwork.main, 1),
+    heco: getCommonNetworkConfig(eEthereumNetwork.heco, 128),
+    hecotest: getCommonNetworkConfig(eEthereumNetwork.hecotest, 256),
+    bsc: getCommonNetworkConfig(eEthereumNetwork.bsc, 56),
+    bsctest: getCommonNetworkConfig(eEthereumNetwork.main, 97),
     buidlerevm: {
       hardfork: 'istanbul',
       blockGasLimit: DEFAULT_BLOCK_GAS_LIMIT,

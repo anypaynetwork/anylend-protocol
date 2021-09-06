@@ -14,6 +14,10 @@ export enum eEthereumNetwork {
   coverage = 'coverage',
   hardhat = 'hardhat',
   tenderlyMain = 'tenderlyMain',
+  hecotest = 'hecotest',
+  heco = 'heco',
+  bsctest = 'bsctest',
+  bsc = 'bsc',
 }
 
 export enum ePolygonNetwork {
@@ -409,6 +413,10 @@ export interface iEthereumParamsPerNetwork<T> {
   [eEthereumNetwork.main]: T;
   [eEthereumNetwork.hardhat]: T;
   [eEthereumNetwork.tenderlyMain]: T;
+  [eEthereumNetwork.hecotest]: T;
+  [eEthereumNetwork.heco]: T;
+  [eEthereumNetwork.bsctest]: T;
+  [eEthereumNetwork.bsc]: T;
 }
 
 export interface iPolygonParamsPerNetwork<T> {
@@ -486,6 +494,7 @@ export interface ICommonConfiguration {
   PoolAdminIndex: number;
   EmergencyAdmin: iParamsPerNetwork<tEthereumAddress | undefined>;
   EmergencyAdminIndex: number;
+
   ReserveAssets: iParamsPerNetwork<SymbolMap<tEthereumAddress>>;
   ReservesConfig: iMultiPoolsAssets<IReserveParams>;
   ATokenDomainSeparator: iParamsPerNetwork<string>;
